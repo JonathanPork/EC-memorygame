@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    #game-board {
+      display: grid;
+      grid-template-columns: repeat(4, 100px);
+      grid-gap: 10px;
+      justify-content: center;
+      margin: 20px auto;
+    }
+    .card {
+      width: 100px;
+      height: 100px;
+      background-color: blue;
+      color: white;
+      font-size: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    .matched {
+      background-color: green;
+      cursor: default;
+    }
+    .input-area {
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Memory Game</h1>
+  <div class="input-area">
+    <input type="text" id="word-input" placeholder="Enter words (comma-separated)">
+    <button onclick="startGame()">Start Game</button>
+  </div>
+  <div id="game-board"></div>
+  <script src="game.js"></script>
+</body>
+</html>
