@@ -1,18 +1,18 @@
-let words = []; // Initialize an empty word list
+let words = []; // Word list
 let firstCard = null;
 let secondCard = null;
 let matches = 0;
-let lockBoard = false; // Lock mechanism to prevent multiple clicks during processing
+let lockBoard = false; // Lock board to prevent extra clicks
 
 // Function to start the game
 function startGame() {
   const input = document.getElementById("word-input").value.trim();
   if (!input) {
-    alert("Please enter at least one word.");
+    alert("Please enter words separated by commas.");
     return;
   }
 
-  // Split the input into an array of words and shuffle
+  // Split the input, trim spaces, and validate
   words = input.split(",").map(word => word.trim());
   if (words.length < 5) {
     alert("Please enter at least 5 unique words.");
@@ -28,11 +28,11 @@ function startGame() {
   secondCard = null;
   lockBoard = false;
 
-  // Clear the game board
+  // Clear game board
   const gameBoard = document.getElementById("game-board");
   gameBoard.innerHTML = "";
 
-  // Create the game board
+  // Generate the game board
   words.forEach((word, index) => {
     const card = document.createElement("div");
     card.classList.add("card");
@@ -45,14 +45,15 @@ function startGame() {
 
 // Function to handle card clicks
 function flipCard(event) {
-  if (lockBoard) return; // Prevent clicks while the board is locked
+  if (lockBoard) return; // Stop clicks while board is locked
   const card = event.target;
 
-  // Ignore clicks on already matched cards or the same card twice
+  // Ignore clicks on already matched cards or the same card
   if (card.classList.contains("matched") || card === firstCard) return;
 
   // Reveal the card
   card.textContent = card.dataset.word;
+  card.classList.add("revealed");
 
   if (!firstCard) {
     // First card clicked
@@ -61,38 +62,37 @@ function flipCard(event) {
     // Second card clicked
     secondCard = card;
 
-    // Lock the board to prevent additional clicks
+    // Lock the board immediately
     lockBoard = true;
 
     if (firstCard.dataset.word === secondCard.dataset.word) {
       // Match found
       firstCard.classList.add("matched");
       secondCard.classList.add("matched");
-      matches++;
       resetTurn();
 
+      matches++;
       if (matches === words.length / 2) {
-        alert("Congratulations! You matched all pairs!");
+        setTimeout(() => {
+          alert("Congratulations! You matched all pairs!");
+        }, 500); // Small delay for final match
       }
     } else {
-      // No match: hide the cards after a short delay
+      // No match: Hide the cards after a short delay
       setTimeout(() => {
         firstCard.textContent = "";
+        firstCard.classList.remove("revealed");
         secondCard.textContent = "";
+        secondCard.classList.remove("revealed");
         resetTurn();
       }, 1000);
     }
   }
 }
 
-// Reset cards after each turn
+// Reset the game state after each turn
 function resetTurn() {
   firstCard = null;
   secondCard = null;
   lockBoard = false; // Unlock the board for the next turn
-}
-// Reset cards after each turn
-function resetTurn() {
-  firstCard = null;
-  secondCard = null;
 }
