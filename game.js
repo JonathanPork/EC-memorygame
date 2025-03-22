@@ -1,22 +1,45 @@
-// Words for the game (customizable)
-const words = ["Apple", "Dog", "Sun", "Tree", "Sky", "Apple", "Dog", "Sun", "Tree", "Sky"];
-words.sort(() => Math.random() - 0.5); // Shuffle the words
-
-// Variables for game state
+let words = []; // Initialize an empty word list
 let firstCard = null;
 let secondCard = null;
 let matches = 0;
 
-// Create the game board
-const gameBoard = document.getElementById("game-board");
-words.forEach((word, index) => {
-  const card = document.createElement("div");
-  card.classList.add("card");
-  card.dataset.word = word;
-  card.dataset.index = index;
-  card.addEventListener("click", flipCard);
-  gameBoard.appendChild(card);
-});
+// Function to start the game
+function startGame() {
+  const input = document.getElementById("word-input").value.trim();
+  if (!input) {
+    alert("Please enter at least one word.");
+    return;
+  }
+
+  // Split the input into an array of words and shuffle
+  words = input.split(",").map(word => word.trim());
+  if (words.length < 5) {
+    alert("Please enter at least 5 unique words.");
+    return;
+  }
+
+  words = [...words, ...words]; // Duplicate words to create pairs
+  words.sort(() => Math.random() - 0.5); // Shuffle the words
+
+  // Reset game variables
+  matches = 0;
+  firstCard = null;
+  secondCard = null;
+
+  // Clear the game board
+  const gameBoard = document.getElementById("game-board");
+  gameBoard.innerHTML = "";
+
+  // Create the game board
+  words.forEach((word, index) => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.dataset.word = word;
+    card.dataset.index = index;
+    card.addEventListener("click", flipCard);
+    gameBoard.appendChild(card);
+  });
+}
 
 // Function to handle card clicks
 function flipCard(event) {
