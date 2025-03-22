@@ -2,7 +2,7 @@ let words = []; // Word list
 let firstCard = null;
 let secondCard = null;
 let matches = 0;
-let lockBoard = false; // Lock board to prevent extra clicks
+let lockBoard = false; // Lock board to prevent additional clicks during processing
 
 // Function to start the game
 function startGame() {
@@ -45,11 +45,10 @@ function startGame() {
 
 // Function to handle card clicks
 function flipCard(event) {
-  if (lockBoard) return; // Stop clicks while board is locked
   const card = event.target;
 
-  // Ignore clicks on already matched cards or the same card
-  if (card.classList.contains("matched") || card === firstCard) return;
+  // Ignore clicks while the board is locked or on already matched cards
+  if (lockBoard || card.classList.contains("matched") || card === firstCard) return;
 
   // Reveal the card
   card.textContent = card.dataset.word;
@@ -62,27 +61,27 @@ function flipCard(event) {
     // Second card clicked
     secondCard = card;
 
-    // Lock the board immediately
+    // Lock the board immediately to prevent additional clicks
     lockBoard = true;
 
     if (firstCard.dataset.word === secondCard.dataset.word) {
       // Match found
-      firstCard.classList.add("matched");
-      secondCard.classList.add("matched");
-      resetTurn();
+      setTimeout(() => {
+        firstCard.classList.add("matched");
+        secondCard.classList.add("matched");
+        resetTurn();
 
-      matches++;
-      if (matches === words.length / 2) {
-        setTimeout(() => {
+        matches++;
+        if (matches === words.length / 2) {
           alert("Congratulations! You matched all pairs!");
-        }, 500); // Small delay for final match
-      }
+        }
+      }, 500); // Small delay for smoother visuals
     } else {
       // No match: Hide the cards after a short delay
       setTimeout(() => {
         firstCard.textContent = "";
-        firstCard.classList.remove("revealed");
         secondCard.textContent = "";
+        firstCard.classList.remove("revealed");
         secondCard.classList.remove("revealed");
         resetTurn();
       }, 1000);
@@ -90,7 +89,7 @@ function flipCard(event) {
   }
 }
 
-// Reset the game state after each turn
+// Reset game state after each turn
 function resetTurn() {
   firstCard = null;
   secondCard = null;
