@@ -2,6 +2,7 @@ let words = []; // Initialize an empty word list
 let firstCard = null;
 let secondCard = null;
 let matches = 0;
+let lockBoard = false; // Lock mechanism to prevent multiple clicks during processing
 
 // Function to start the game
 function startGame() {
@@ -25,6 +26,71 @@ function startGame() {
   matches = 0;
   firstCard = null;
   secondCard = null;
+  lockBoard = false;
+
+  // Clear the game board
+  const gameBoard = document.getElementById("game-board");
+  gameBoard.innerHTML = "";
+
+  // Create the game board
+  words.forEach((word, index) => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.dataset.word = word;
+    card.dataset.index = index;
+    card.addEventListener("click", flipCard);
+    gameBoard.appendChild(card);
+  });
+}
+
+// Function to handle card clicks
+function flipCard(event) {
+  if (lockBoard) return; // Prevent clicking while processing
+  const card = event.target;
+
+  // Ignore clicks on already matched cards or the same card twice
+  if (card.classList.contains("matched") || card === firstCard) return;
+
+  // Reveal the card
+  card.textContent = card.dataset.word;
+
+  if (!firstCard) {
+    // First card clicked
+    firstCard = card;
+  } else {
+    // Second card clicked
+    secondCard = card;
+
+    // Lock the board to prevent additional clicks
+    lockBoard = true;
+
+    if (firstCard.dataset.word === secondCard.dataset.word) {
+      // Match found
+      firstCard.classList.add("matched");
+      secondCard.classList.add("matched");
+      matches++;
+      resetTurn();
+
+      if (matches === words.length / 2) {
+        alert("Congratulations! You matched all pairs!");
+      }
+    } else {
+      // No match: hide the cards after a short delay
+      setTimeout(() => {
+        firstCard.textContent = "";
+        secondCard.textContent = "";
+        resetTurn();
+      }, 1000);
+    }
+  }
+}
+
+// Reset cards after each turn
+function resetTurn() {
+  firstCard = null;
+  secondCard = null;
+  lockBoard = false;
+}
 
   // Clear the game board
   const gameBoard = document.getElementById("game-board");
